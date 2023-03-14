@@ -1,57 +1,107 @@
-const add = (num1, num2) => {
-  return num1 + num2;
+const calculatorDisplay = document.getElementById(`display`);
+const clearLastButton = document.getElementById(`clear-last`);
+const allClearButton = document.getElementById(`all-clear`);
+const decimalButton = document.getElementById(`decimal`);
+const backspaceButton = document.getElementById(`backspace`);
+const equalsButton = document.getElementById(`equals`);
+const numberButtons = document.querySelectorAll(`.number-btns`);
+const operatorButtons = document.querySelectorAll(`.operator-btns`);
+
+let displayNumbers = "";
+let chosenOperator = "";
+let temporaryResult = "";
+let calculatedResult = null;
+let hasDecimalPoint = false;
+
+const displayNumbersOnScreen = () => {
+  numberButtons.forEach((numberButton) => {
+    numberButton.addEventListener(`click`, (e) => {
+      const clickedNumberKey = e.target.textContent;
+      //checks if there is a decimal point
+      if (clickedNumberKey === `.` && !hasDecimalPoint) {
+        hasDecimalPoint = true;
+      //terminate the function if a decimal exists
+      } else if (clickedNumberKey === `.` && hasDecimalPoint) {
+        return;
+      }
+      displayNumbers += clickedNumberKey;
+      limitInputLength();
+    });
+  });
 };
 
-const subtract = (num1, num2) => {
-  return num1 - num2;
+displayNumbersOnScreen();
+
+operatorButtons.forEach((operatorButton) => {
+  operatorButton.addEventListener(`click`, (e) => {
+    const clickedOperatorButton = e.target.textContent;
+    // exits function if there are no numbers before the operator
+    if (!displayNumbers) {
+      console.log(`no numbers to calculate!`);
+      return;
+    } else {
+      hasDecimalPoint = false;
+      chosenOperator += clickedOperatorButton;
+      console.log(`you clicked the ${chosenOperator} key`);
+      if (displayNumbers && temporaryResult && chosenOperator) {
+        console.log(calculate());
+      } else {
+        calculatedResult = parseFloat(displayNumbers)
+        console.log(calculatedResult);
+      }
+    storeTempResult(chosenOperator)
+    console.log(calculatedResult);
+
+    }
+  });
+});
+
+const calculate = () => {
+  if (chosenOperator === "x") {
+    calculatedResult = parseFloat(calculatedResult) * parseFloat(displayNumbers);
+  } else if (chosenOperator === "+") {
+    calculatedResult = parseFloat(calculatedResult) + parseFloat(displayNumbers);
+  } else if (chosenOperator === "-") {
+    calculatedResult = parseFloat(calculatedResult) - parseFloat(displayNumbers);
+  } else if (chosenOperator === "÷") {
+    calculatedResult = parseFloat(calculatedResult) / parseFloat(displayNumbers);
+  }
+}
+
+const clearAll = () => {
+  allClearButton.addEventListener("click", () => {
+    calculatorDisplay.textContent = "";
+    displayNumbers = "";
+    temporaryResult = "";
+    calculatedResult = "";
+  });
 };
 
-const multiply = (num1, num2) => {
-  return num1 * num2;
-};
+clearAll();
 
-const divide = (num1, num2) => {
-  return num1 / num2;
+const backspaceDelete = () => {
+  backspaceButton.addEventListener(`click`, () => {
+    const clearedDisplay = (calculatorDisplay.textContent =
+      calculatorDisplay.textContent.slice(0, -1));
+    displayNumbers = clearedDisplay;
+    console.log(displayNumbers);
+  });
 };
+backspaceDelete();
 
-const operate = (inputNumber, operator, num2) => {
-  switch (operator) {
-    case `+`:
-      return add(num1, num2);
-    case `-`:
-      return subtract(num1, num2);
-    case `*`:
-      return multiply(num1, num2);
-    case `/`:
-      return divide(num1, num2);
+const limitInputLength = () => {
+  if (displayNumbers.length >= 13) {
+    displayNumbers = displayNumbers.slice(0, 12);
+    // console.log(`number limit reached!`);
+  } else {
+    calculatorDisplay.textContent = displayNumbers;
+    console.log(displayNumbers);
   }
 };
-// console.log(operate(2, `+`, 3));
 
-
-//Create the functions that populate the display when you
-//click the number buttons. store the ‘display value’
-//in a variable somewhere for use in the next step.
-
-const calculatorDisplay = document.getElementById(`display`);
-const clearButton = document.getElementById(`clear`);
-const decimalButton = document.getElementById(`decimal`);
-const equalsButton = document.getElementById(`equals`);
-const numberButtons = document.querySelectorAll(`.number-btns`)
-const operatorButtons = document.querySelectorAll(`.operator-btns`)
-
-const displayNumbers = () => {
-
-   let displayNum = ""
-  
-     numberButtons.forEach((numberButton) => {
-      numberButton.addEventListener(`click`, (e) => {
-        pressedNumberKey = e.target.textContent;
-        console.log(`you pressed the ${pressedNumberKey} key`);
-        displayNum += pressedNumberKey;
-        calculatorDisplay.textContent = displayNum;
-     })
-  });
-  
+const storeTempResult = (chosenOperator) => {
+  temporaryResult += displayNumbers + " " + chosenOperator + " ";
+  //clear the display
+  displayNumbers = "";
 }
-displayNumbers();
+
