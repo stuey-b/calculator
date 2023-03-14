@@ -42,14 +42,14 @@ operatorButtons.forEach((operatorButton) => {
     } else {
       hasDecimalPoint = false;
       chosenOperator += clickedOperatorButton;
-      console.log(`you clicked the ${chosenOperator} key`);
+      // console.log(`you clicked the ${chosenOperator} key`);
       if (displayNumbers && temporaryResult && chosenOperator) {
         console.log(calculate());
       } else {
         calculatedResult = parseFloat(displayNumbers)
-        console.log(calculatedResult);
       }
-    storeTempResult(chosenOperator)
+    storeTempResult()
+    console.log(temporaryResult);
     console.log(calculatedResult);
 
     }
@@ -99,7 +99,7 @@ const limitInputLength = () => {
   }
 };
 
-const storeTempResult = (chosenOperator) => {
+const storeTempResult = () => {
   temporaryResult += displayNumbers + " " + chosenOperator + " ";
   //clear the display
   displayNumbers = "";
