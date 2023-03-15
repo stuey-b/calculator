@@ -10,7 +10,7 @@ const operatorButtons = document.querySelectorAll(`.operator-btns`);
 let displayNumbers = "";
 let chosenOperator = "";
 let temporaryResult = "";
-let calculatedResult = null;
+let calculatedResult = "";
 let hasDecimalPoint = false;
 
 const displayNumbersOnScreen = () => {
@@ -20,7 +20,7 @@ const displayNumbersOnScreen = () => {
       //checks if there is a decimal point
       if (clickedNumberKey === `.` && !hasDecimalPoint) {
         hasDecimalPoint = true;
-      //terminate the function if a decimal exists
+        //terminate the function if a decimal exists
       } else if (clickedNumberKey === `.` && hasDecimalPoint) {
         return;
       }
@@ -29,48 +29,54 @@ const displayNumbersOnScreen = () => {
     });
   });
 };
-
 displayNumbersOnScreen();
 
 operatorButtons.forEach((operatorButton) => {
   operatorButton.addEventListener(`click`, (e) => {
-    const clickedOperatorButton = e.target.textContent;
-    // exits function if there are no numbers before the operator
+    // exit function if there are no numbers before the operator
     if (!displayNumbers) {
-      console.log(`no numbers to calculate!`);
       return;
-    } else {
-      hasDecimalPoint = false;
-      chosenOperator += clickedOperatorButton;
-      // console.log(`you clicked the ${chosenOperator} key`);
-      if (displayNumbers && temporaryResult && chosenOperator) {
-        console.log(calculate());
-      } else {
-        calculatedResult = parseFloat(displayNumbers)
-      }
-    storeTempResult()
-    console.log(temporaryResult);
-    console.log(calculatedResult);
-
     }
+    // allow a decimal to be added for the next number
+    hasDecimalPoint = false;
+    const clickedOperatorButton = e.target.textContent;
+      if (displayNumbers && temporaryResult && chosenOperator) {
+      calculate();
+      } else {
+        calculatedResult = parseFloat(displayNumbers);
+      }
+      clearScreenForNextNumber(clickedOperatorButton);
+      chosenOperator = clickedOperatorButton;
+      console.log(calculatedResult);
+
   });
 });
 
 const calculate = () => {
-  if (chosenOperator === "x") {
-    calculatedResult = parseFloat(calculatedResult) * parseFloat(displayNumbers);
-  } else if (chosenOperator === "+") {
-    calculatedResult = parseFloat(calculatedResult) + parseFloat(displayNumbers);
-  } else if (chosenOperator === "-") {
-    calculatedResult = parseFloat(calculatedResult) - parseFloat(displayNumbers);
-  } else if (chosenOperator === "÷") {
-    calculatedResult = parseFloat(calculatedResult) / parseFloat(displayNumbers);
+  switch (chosenOperator) {
+    case `+`:
+      calculatedResult = parseFloat(calculatedResult) + parseFloat(displayNumbers);
+    case `-`:
+      calculatedResult = parseFloat(calculatedResult) - parseFloat(displayNumbers);
+    case `x`:
+      calculatedResult = parseFloat(calculatedResult) * parseFloat(displayNumbers);
+    case `÷`:
+      calculatedResult = parseFloat(calculatedResult) * parseFloat(displayNumbers);
   }
-}
+};
+
+
+const clearLast = () => {
+  clearLastButton.addEventListener(`click`, () => {
+    calculatorDisplay.textContent = "0";
+    displayNumbers = "";
+  });
+};
+clearLast();
 
 const clearAll = () => {
-  allClearButton.addEventListener("click", () => {
-    calculatorDisplay.textContent = "";
+  allClearButton.addEventListener(`click`, () => {
+    calculatorDisplay.textContent = "0";
     displayNumbers = "";
     temporaryResult = "";
     calculatedResult = "";
@@ -81,8 +87,7 @@ clearAll();
 
 const backspaceDelete = () => {
   backspaceButton.addEventListener(`click`, () => {
-    const clearedDisplay = (calculatorDisplay.textContent =
-      calculatorDisplay.textContent.slice(0, -1));
+    const clearedDisplay = (calculatorDisplay.textContent = calculatorDisplay.textContent.slice(0, -1));
     displayNumbers = clearedDisplay;
     console.log(displayNumbers);
   });
@@ -92,16 +97,15 @@ backspaceDelete();
 const limitInputLength = () => {
   if (displayNumbers.length >= 13) {
     displayNumbers = displayNumbers.slice(0, 12);
-    // console.log(`number limit reached!`);
   } else {
     calculatorDisplay.textContent = displayNumbers;
-    console.log(displayNumbers);
   }
 };
 
-const storeTempResult = () => {
-  temporaryResult += displayNumbers + " " + chosenOperator + " ";
-  //clear the display
+
+
+function clearScreenForNextNumber() {
+  temporaryResult += displayNumbers + " " + chosenOperator + " "
+  calculatorDisplay.textContent = "0";
   displayNumbers = "";
 }
-
