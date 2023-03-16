@@ -48,15 +48,23 @@
   background-color: coral;
 }
 
-.calc-display {
+.calc-display, .sub-display {
   justify-content: flex-end;
   padding-right: 25px;
   grid-column: 1 / 5;
   background-color: black;
   color: white;
+}
+
+.calc-display {
   font-size: 3rem;
   font-weight: 900;
   min-height: 4rem;
+}
+
+.sub-display {
+  font-size: 1.2rem;
+  min-height: 2rem;
 }
 
 #zero {
