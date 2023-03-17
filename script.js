@@ -2,7 +2,6 @@ const calculatorDisplay = document.getElementById(`display`);
 const subDisplay = document.getElementById(`sub-display`);
 const clearLastButton = document.getElementById(`clear-last`);
 const allClearButton = document.getElementById(`all-clear`);
-const decimalButton = document.getElementById(`decimal`);
 const backspaceButton = document.getElementById(`backspace`);
 const equalsButton = document.getElementById(`equals`);
 const numberButtons = document.querySelectorAll(`.number-btns`);
@@ -10,9 +9,10 @@ const operatorButtons = document.querySelectorAll(`.operator-btns`);
 
 let storedNumbers = "";
 let temporaryNumbers = "";
-let chosenOperator = "";
+let storedOperator = "";
 let calculatedResult = "";
 let hasDecimalPoint = false;
+
 
 numberButtons.forEach((numberButton) => {
   numberButton.addEventListener(`click`, (e) => {
@@ -29,25 +29,38 @@ numberButtons.forEach((numberButton) => {
 
 operatorButtons.forEach((operatorButton) => {
   operatorButton.addEventListener(`click`, (e) => {
-    //allow a decimal to be added if a number exists
+    const clickedOperatorButton = e.target.textContent;
+    //allow a decimal to be added to next input number if 1st has been stored.
     if (storedNumbers) {
       hasDecimalPoint = false;
-      const clickedOperatorButton = e.target.textContent;
-      if (storedNumbers && chosenOperator && temporaryNumbers) {
+      if (storedNumbers && storedOperator && temporaryNumbers) {
         calculateAnswer();
       } else {
         calculatedResult = parseFloat(storedNumbers);
       }
       storeTempNumber(clickedOperatorButton);
-      chosenOperator = clickedOperatorButton;
+      storedOperator = clickedOperatorButton;
     } else {
       return;
     }
   });
 });
 
+equalsButton.addEventListener(`click`, () => {
+  if (storedNumbers) {
+    calculateAnswer();
+    storeTempNumber();
+    calculatorDisplay.textContent = calculatedResult;
+    subDisplay.textContent = "";
+    storedNumbers = calculatedResult;
+    temporaryNumbers = "";
+  } else {
+    return;
+  }
+});
+
 const calculateAnswer = () => {
-  switch (chosenOperator) {
+  switch (storedOperator) {
     case `+`:
       calculatedResult = parseFloat(calculatedResult) + parseFloat(storedNumbers);
       break;
@@ -64,24 +77,13 @@ const calculateAnswer = () => {
 };
 
 const storeTempNumber = (clickedOperatorButton) => {
+  // pass in clicked operator string and add to sub display
   temporaryNumbers += storedNumbers + "  " + clickedOperatorButton + " ";
   subDisplay.textContent = temporaryNumbers;
+  //clear the main display for the next input
   calculatorDisplay.textContent = "";
   storedNumbers = "";
 };
-
-equalsButton.addEventListener(`click`, () => {
-  if (storedNumbers) {
-    calculateAnswer();
-    storeTempNumber();
-    calculatorDisplay.textContent = calculatedResult;
-    subDisplay.textContent = "";
-    storedNumbers = calculatedResult;
-    temporaryNumbers = "";
-  } else {
-    return;
-  }
-});
 
 const clearLast = () => {
   clearLastButton.addEventListener(`click`, () => {
@@ -89,6 +91,7 @@ const clearLast = () => {
     storedNumbers = "";
   });
 };
+clearLast();
 
 const clearAll = () => {
   allClearButton.addEventListener(`click`, () => {
@@ -100,13 +103,16 @@ const clearAll = () => {
     console.clear();
   });
 };
+clearAll();
 
 const backspaceDelete = () => {
   backspaceButton.addEventListener(`click`, () => {
-    const clearedDisplay = (calculatorDisplay.textContent =calculatorDisplay.textContent.slice(0, -1));
+    const clearedDisplay = (calculatorDisplay.textContent = calculatorDisplay.textContent.slice(0, -1));
     storedNumbers = clearedDisplay;
   });
 };
+
+backspaceDelete();
 
 const limitInputLength = () => {
   if (storedNumbers.length >= 13) {
@@ -115,8 +121,3 @@ const limitInputLength = () => {
     calculatorDisplay.textContent = storedNumbers;
   }
 };
-
-
-clearAll();
-clearLast();
-backspaceDelete();
