@@ -71,10 +71,15 @@ const calculateAnswer = () => {
       calculatedResult = parseFloat(calculatedResult) * parseFloat(storedNumbers);
       break;
     case `÷`:
-      calculatedResult = parseFloat(calculatedResult) / parseFloat(storedNumbers);
-      break;
+      if (storedNumbers == 0) {
+        console.log(`Stop that NERDDDD`);
+      } else {
+        calculatedResult = parseFloat(calculatedResult) / parseFloat(storedNumbers);
+        break;
+      }
+        
+      }    
   }
-};
 
 const storeTempNumber = (clickedOperatorButton) => {
   // pass in clicked operator string and add to sub display
