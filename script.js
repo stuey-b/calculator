@@ -13,7 +13,6 @@ let storedOperator = "";
 let calculatedResult = "";
 let hasDecimalPoint = false;
 
-
 numberButtons.forEach((numberButton) => {
   numberButton.addEventListener(`click`, (e) => {
     const clickedNumberKey = e.target.textContent;
@@ -30,14 +29,12 @@ numberButtons.forEach((numberButton) => {
 operatorButtons.forEach((operatorButton) => {
   operatorButton.addEventListener(`click`, (e) => {
     const clickedOperatorButton = e.target.textContent;
-    //allow a decimal to be added to next input number if 1st has been stored.
+    //allow a decimal to be added if the 1st number is stored already.
     if (storedNumbers) {
       hasDecimalPoint = false;
-      if (storedNumbers && storedOperator && temporaryNumbers) {
-        calculateAnswer();
-      } else {
-        calculatedResult = parseFloat(storedNumbers);
-      }
+      storedNumbers && storedOperator && temporaryNumbers
+        ? calculateAnswer()
+        : (calculatedResult = parseFloat(storedNumbers));
       storeTempNumber(clickedOperatorButton);
       storedOperator = clickedOperatorButton;
     } else {
@@ -51,9 +48,9 @@ equalsButton.addEventListener(`click`, () => {
     calculateAnswer();
     storeTempNumber();
     calculatorDisplay.textContent = calculatedResult;
-    subDisplay.textContent = "";
+    subDisplay.textContent = ``;
     storedNumbers = calculatedResult;
-    temporaryNumbers = "";
+    temporaryNumbers = ``;
   } else {
     return;
   }
@@ -62,66 +59,64 @@ equalsButton.addEventListener(`click`, () => {
 const calculateAnswer = () => {
   switch (storedOperator) {
     case `+`:
-      calculatedResult = parseFloat(calculatedResult) + parseFloat(storedNumbers);
+      result = parseFloat(calculatedResult) + parseFloat(storedNumbers);
       break;
     case `-`:
-      calculatedResult = parseFloat(calculatedResult) - parseFloat(storedNumbers);
+      result = parseFloat(calculatedResult) - parseFloat(storedNumbers);
       break;
     case `x`:
-      calculatedResult = parseFloat(calculatedResult) * parseFloat(storedNumbers);
+      result = parseFloat(calculatedResult) * parseFloat(storedNumbers);
       break;
     case `÷`:
-      if (storedNumbers == 0) {
-        console.log(`Stop that NERDDDD`);
-      } else {
-        calculatedResult = parseFloat(calculatedResult) / parseFloat(storedNumbers);
-        break;
-      }
-        
-      }    
+      result = parseFloat(calculatedResult) / parseFloat(storedNumbers);
+      break;
   }
+  calculatedResult = Math.round(result * 100) / 100;
+};
 
 const storeTempNumber = (clickedOperatorButton) => {
   // pass in clicked operator string and add to sub display
   temporaryNumbers += storedNumbers + "  " + clickedOperatorButton + " ";
   subDisplay.textContent = temporaryNumbers;
-  //clear the main display for the next input
-  calculatorDisplay.textContent = "";
-  storedNumbers = "";
+  calculatorDisplay.textContent = ``;
+  storedNumbers = ``;
 };
 
 const clearLast = () => {
   clearLastButton.addEventListener(`click`, () => {
-    calculatorDisplay.textContent = "0";
-    storedNumbers = "";
+    hasDecimalPoint = false;
+    calculatorDisplay.textContent = `0`;
+    storedNumbers = ``;
   });
 };
+
 clearLast();
 
 const clearAll = () => {
   allClearButton.addEventListener(`click`, () => {
-    calculatorDisplay.textContent = "0";
-    subDisplay.textContent = "";
-    storedNumbers = "";
-    temporaryNumbers = "";
-    calculatedResult = "";
-    console.clear();
+    hasDecimalPoint = false;
+    calculatorDisplay.textContent = `0`;
+    subDisplay.textContent = ``;
+    storedNumbers = ``;
+    temporaryNumbers = ``;
+    calculatedResult = ``;
   });
 };
+
 clearAll();
 
 const backspaceDelete = () => {
   backspaceButton.addEventListener(`click`, () => {
-    const clearedDisplay = (calculatorDisplay.textContent = calculatorDisplay.textContent.slice(0, -1));
-    storedNumbers = clearedDisplay;
+    storedNumbers = calculatorDisplay.textContent =
+      calculatorDisplay.textContent.slice(0, -1);
   });
 };
 
 backspaceDelete();
 
 const limitInputLength = () => {
-  if (storedNumbers.length >= 13) {
-    storedNumbers = storedNumbers.slice(0, 12);
+  if (storedNumbers.length >= 11) {
+    storedNumbers = storedNumbers.slice(0, 11);
   } else {
     calculatorDisplay.textContent = storedNumbers;
   }
