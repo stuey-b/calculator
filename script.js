@@ -20,10 +20,9 @@ numberButtons.forEach((numberButton) => {
       hasDecimalPoint = true;
     } else if (clickedNumberKey === `.` && hasDecimalPoint) {
       return;
-    } 
+    }
     storedNumbers += clickedNumberKey;
     limitInputLength();
-    
   });
 });
 
