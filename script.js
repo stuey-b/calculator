@@ -20,21 +20,23 @@ numberButtons.forEach((numberButton) => {
       hasDecimalPoint = true;
     } else if (clickedNumberKey === `.` && hasDecimalPoint) {
       return;
-    }
+    } 
     storedNumbers += clickedNumberKey;
     limitInputLength();
+    
   });
 });
 
 operatorButtons.forEach((operatorButton) => {
   operatorButton.addEventListener(`click`, (e) => {
     const clickedOperatorButton = e.target.textContent;
-    //allow a decimal to be added if the 1st number is stored already.
     if (storedNumbers) {
       hasDecimalPoint = false;
-      storedNumbers && storedOperator && temporaryNumbers
-        ? calculateAnswer()
-        : (calculatedResult = parseFloat(storedNumbers));
+      if (storedNumbers && storedOperator && temporaryNumbers) {
+        calculateAnswer();
+      } else {
+        calculatedResult = parseFloat(storedNumbers);
+      }
       storeTempNumber(clickedOperatorButton);
       storedOperator = clickedOperatorButton;
     } else {
@@ -75,7 +77,6 @@ const calculateAnswer = () => {
 };
 
 const storeTempNumber = (clickedOperatorButton) => {
-  // pass in clicked operator string and add to sub display
   temporaryNumbers += storedNumbers + "  " + clickedOperatorButton + " ";
   subDisplay.textContent = temporaryNumbers;
   calculatorDisplay.textContent = ``;
